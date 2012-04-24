@@ -1,124 +1,123 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Cachegrab!</title>
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
-<script src="http://maps.google.com/maps/api/js?sensor=true" type="text/javascript"></script>
-<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js" type="text/javascript" ></script>
-<script src="js/jquery.ui.map.js" type="text/javascript"></script>
-<script src="js/jquery.ui.map.extensions.js" type="text/javascript"></script>
-<script src="js/yqlgeo.js" type="text/javascript"></script>
-<script type="text/javascript">
-	
-	// starts the geolocation script when the window is ready
-	jQuery(window).ready(initiate_geolocation);
-	
-	// makes our btn go get our php file
-	jQuery(window).ready(function(){
-		jQuery('#btnInit').click(getcaches);
-	});
-	
-	// gets the cache data from our php file
-	function getcaches() {
-		$.ajax({
-			url: "php/findcache.php",
-			dataType: "json", // return type data is json
-			success: function(data){ // <-- data is in json format
-				alert(data.test3);
-				//parse the json data
+<!DOCTYPE html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Cachegrab!</title>
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css" />
+		<link rel="stylesheet" href="themes/cache.min.css" />
+		<script src="http://maps.google.com/maps/api/js?&amp;key=AIzaSyAA7Hhr3Phknh2YYk8r8UJ2WjgIwM8Iy5Y&amp;sensor=true" type="text/javascript"></script>
+		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js" type="text/javascript" ></script>
+		<script src="js/jquery.ui.map.js" type="text/javascript"></script>
+		<script src="js/jquery.ui.map.extensions.js" type="text/javascript"></script>
+		<script src="js/yqlgeo.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			
+			// starts the geolocation script when the window is ready
+			jQuery(window).ready(initiate_geolocation);
+			
+			// makes our btn go get our php file
+			jQuery(window).ready(function(){
+				jQuery('#btnInit').click(getcaches);
+			});
+			
+			// gets the cache data from our php file
+			function getcaches() {
+				$.ajax({
+					url: "php/findcache.php",
+					dataType: "json", // return type data is json
+					success: function(data){ // <-- data is in json format
+						alert(data.test3);
+						//parse the json data
+					}
+				});
+				return false;	
 			}
-		});
-		return false;	
-	}
-	
-	
-	// checks to see if the geolocation service is available in the current browser, if so gets the current position
-	// else uses the old school yahoo IP location method
-	function initiate_geolocation() {
-		if (navigator.geolocation)
-		{
-			navigator.geolocation.getCurrentPosition(handle_geolocation_query,handle_errors);
-		} else {
-			yqlgeo.get('visitor', normalize_yql_response);
-		}
-	}
-	
-	
-	// handles error cases
-	function handle_errors(error)
-	{
-		switch(error.code)
-		{
-			case error.PERMISSION_DENIED: alert("user did not share geolocation data")
-			break;
 			
-			case error.POSITION_UNAVAILABLE: alert("could not detect current position")
-			break;
 			
-			case error.TIMEOUT: alert('retrieving position timed out');
-			break;
-			
-			default: alert("unknown error")
-			break;
-		}
-	}
-	
-	// turns the yahoo IP location data into something readable by the google maps API
-	function normalize_yql_response(response)
-	{
-		if (response.error)
-		{
-			var error = {code:0}
-			handle_errors(error);
-			return;
-		}
-		
-		var position = {
-			coords :
-			{
-				latitude: response.place.centroid.latitude,
-				longitude: response.place.centroid.longitude
-			},
-			address :
-			{
-				city: response.place.locality2.content,
-				region: response.place.admin1.content,
-				country: response.place.country.content
+			// checks to see if the geolocation service is available in the current browser, if so gets the current position
+			// else uses the old school yahoo IP location method
+			function initiate_geolocation() {
+				if (navigator.geolocation)
+				{
+					navigator.geolocation.getCurrentPosition(handle_geolocation_query,handle_errors);
+				} else {
+					yqlgeo.get('visitor', normalize_yql_response);
+				}
 			}
-		};
-		
-		handle_geolocation_query(position);
-	}
-	
-	// builds the google maps image and displays it in #map_canvas
-	function handle_geolocation_query(position){
-		var image_url = "http://maps.google.com/maps/api/staticmap?sensor=false&center=" + position.coords.latitude + "," + position.coords.longitude + "&zoom=14&size=300x400&markers=color:blue|label:S|" + position.coords.latitude + "," + position.coords.longitude;
-		
-		jQuery("#map").remove();
-		jQuery("#map_canvas").append(
-			jQuery(document.createElement("img")).attr("src", image_url).attr('id','map')
-		);
-	}
+			
+			// handles error cases
+			function handle_errors(error)
+			{
+				switch(error.code)
+				{
+					case error.PERMISSION_DENIED: alert("user did not share geolocation data")
+					break;
+					
+					case error.POSITION_UNAVAILABLE: alert("could not detect current position")
+					break;
+					
+					case error.TIMEOUT: alert('retrieving position timed out');
+					break;
+					
+					default: alert("unknown error")
+					break;
+				}
+			}
+			
+			// turns the yahoo IP location data into something readable by the google maps API
+			function normalize_yql_response(response)
+			{
+				if (response.error)
+				{
+					var error = {code:0}
+					handle_errors(error);
+					return;
+				}
+				
+				var position = {
+					coords :
+					{
+						latitude: response.place.centroid.latitude,
+						longitude: response.place.centroid.longitude
+					},
+					address :
+					{
+						city: response.place.locality2.content,
+						region: response.place.admin1.content,
+						country: response.place.country.content
+					}
+				};
+				
+				handle_geolocation_query(position);
+			}
+			
+			// builds the google maps image and displays it in #map_canvas
+			function handle_geolocation_query(position){
+				var image_url = "http://maps.google.com/maps/api/staticmap?sensor=false&center=" + position.coords.latitude + "," + position.coords.longitude + "&zoom=14&size=300x400&markers=color:blue|label:S|" + position.coords.latitude + "," + position.coords.longitude;
+				
+				jQuery("#map").remove();
+				jQuery("#map_canvas").append(
+					jQuery(document.createElement("img")).attr("src", image_url).attr('id','map')
+				);
+			}
 
-</script>
-</head>
+		</script>
+	</head>
 
-<body>
+	<body>
 
-    <div id="gps_map" data-role="page">
-        <div data-role="header">
-            <h1><a data-ajax="false" href="http://sulley.dm.ucf.edu/~ph652925/DIG4104c/project3">Cachegrab.com</a></h1>
-            <a data-rel="back">Back</a>
-        </div>
-        <div data-role="content">
-        	<button id="btnInit">Grab caches!</button>	
-            <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
-                <div id="map_canvas" style="height:400px;"></div>
-            </div>
-        </div>
-    </div>
-        
-</body>
+	    <div id="gps_map" data-role="page">
+	        <div "ui-header ui-bar-a" data-swatch="a" data-theme="a" data-form="ui-bar-a" data-role="header" role="banner">
+	            <h1><a data-ajax="false" href="http://sulley.dm.ucf.edu/~ph652925/DIG4104c/project3">Cachegrab.com</a></h1>
+	            <a data-rel="back">Back</a>
+	        </div>
+	        <div "ui-content ui-body-a" data-theme="a" data-form="ui-body-a" data-role="content" role="main">
+	        	<button id="btnInit">Grab caches!</button>	
+	            <div class="ui-bar-c ui-corner-all ui-shadow" style="padding:1em;">
+	        		<div id="map_canvas" style="width: 100%; height: 100%;"></div>
+	            </div>
+	        </div>
+	    </div>
+	        
+	</body>
 </html>
